@@ -3,21 +3,6 @@ from fastapi import FastAPI
 app = FastAPI()
 
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-
-@app.get("/role")
-def role():
-    name, job, time = "Carlos", "Software Developer", 2
-    return {
-        "name": f"{name}",
-        "job": f"{job}",
-        "time": f"{time} years"
-    }
-
-
 @app.get("/blogs")
 async def index():
     return {"data": "Blogs list"}
@@ -29,7 +14,7 @@ async def unpublished():
 
 
 @app.get("/blog/{id}")
-async def index(id: int):
+async def show(id: int):
     # fecth blog with id = {id}
     return {"data": f"Blog N° {id}"}
 
@@ -37,3 +22,8 @@ async def index(id: int):
 @app.get("/blog/{id}/comments")
 async def comments(id: int):
     return {"data": "A Great Blog! Recommended"}
+
+
+# For access the documentation:
+# http://127.0.0.1:8000/docs (Swagger UI)
+# http://127.0.0.1:8000/redoc (Redoc UI)
