@@ -1,4 +1,4 @@
 git add -A
-git commit -m "Actual Topic: API Docs => Swagger and Redocs | Next Topic: Query Parameters"
+git commit -m "Actual Topic: Query Parameters | Next Topic: Request Body"
 git push
 git status
