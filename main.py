@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from typing import Optional
 from pydantic import BaseModel
+import uvicorn
 
 app = FastAPI()
 
@@ -47,3 +48,12 @@ async def createBlog(req: Blog):
 # For access the documentation:
 # http://127.0.0.1:8000/docs (Swagger UI)
 # http://127.0.0.1:8000/redoc (Redoc UI)
+
+# TODO: tutorial-video continue in 01:03:58
+
+"""
+# If you want to change the port, uncomment the code below:
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.1", port=8080)
+"""
