@@ -1,8 +1,11 @@
 from fastapi import FastAPI
-import schemas
+from db import engine
+import models, schemas
 import uvicorn
 
 app = FastAPI()
+
+models.Base.metadata.create_all(engine)
 
 
 @app.get("/blog/entry")
