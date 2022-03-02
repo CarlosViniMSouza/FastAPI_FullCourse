@@ -17,8 +17,13 @@ def get_db():
         db.close()
 
 
+@app.get("/")
+def hello():
+    return {"message": "hello"}
+
+
 @app.get("blog/all")
-def allBlogs(db: Session = Depends(get_db)):
+async def allBlogs(db: Session = Depends(get_db)):
     blogs = db.query(models.Blog).all()
     return blogs
 
@@ -32,13 +37,6 @@ async def specificBlog(id, response: Response, db: Session = Depends(get_db)):
             detail=f"Blog of id: {id} -> Not Available"
         )
 
-        """
-        # the other way:
-        
-        response.status_code = status.HTTP_404_NOT_FOUND
-        return {"response": f"Blog of id: {id} -> Not Available"}
-        """
-
     return blog
 
 
@@ -50,6 +48,12 @@ async def createBlog(req: schemas.BlogVars, db: Session = Depends(get_db)):
     db.refresh(new_blog)
 
     return new_blog
+
+
+@app.delete("/blog/{id}", status_code=status.HTTP_204_NO_CONTENT)
+async def deleteBlog(id, db: Session = Depends(get_db)):
+    blog = db.query(models.Blog).filter(models.Blog.id == id).delete(synchronize_session=False)
+    return 'Blog deleted'
 
 
 if __name__ == "__main__":
