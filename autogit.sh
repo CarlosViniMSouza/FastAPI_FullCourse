@@ -1,4 +1,4 @@
 git add -A
-git commit -m "Actual Topic: Get blogs from DB | Next Topic: Exceptions"
+git commit -m "Actual Topic: Exceptions | Next Topic: Delete a Blog"
 git push
 git status
