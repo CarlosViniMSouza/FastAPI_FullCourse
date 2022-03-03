@@ -23,14 +23,14 @@ def hello():
     return {"message": "hello"}
 
 
-@app.get("blog/all", response_model=List[schemas.ShowBlog])
+@app.get("blog/all", response_model=List[schemas.ShowBlog], tags=['Blogs'])
 async def allBlogs(db: Session = Depends(get_db)):
     blogs = db.query(models.Blog).all()
 
     return blogs
 
 
-@app.get("blog/{id}", status_code=200, response_model=schemas.ShowBlog)
+@app.get("blog/{id}", status_code=200, response_model=schemas.ShowBlog, tags=['Blogs'])
 async def specificBlog(id, response: Response, db: Session = Depends(get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id == id).first()
     if not blog:
@@ -42,7 +42,7 @@ async def specificBlog(id, response: Response, db: Session = Depends(get_db)):
     return blog
 
 
-@app.post("/blog", status_code=status.HTTP_201_CREATED)
+@app.post("/blog", status_code=status.HTTP_201_CREATED, tags=['Blogs'])
 async def createBlog(req: schemas.BlogVars, db: Session = Depends(get_db)):
     new_blog = models.Blog(title=req.title, body=req.body)
     db.add(new_blog)
@@ -52,7 +52,7 @@ async def createBlog(req: schemas.BlogVars, db: Session = Depends(get_db)):
     return new_blog
 
 
-@app.delete("/blog/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/blog/{id}", status_code=status.HTTP_204_NO_CONTENT, tags=['Blogs'])
 async def deleteBlog(id, db: Session = Depends(get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id == id)
 
@@ -68,7 +68,7 @@ async def deleteBlog(id, db: Session = Depends(get_db)):
     return 'Blog deleted'
 
 
-@app.put("/blog/{id}", status_code=status.HTTP_202_ACCEPTED)
+@app.put("/blog/{id}", status_code=status.HTTP_202_ACCEPTED, tags=['Blogs'])
 async def updateBlog(id, req: schemas.BlogVars, db: Session = Depends(get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id == id)
 
@@ -84,7 +84,7 @@ async def updateBlog(id, req: schemas.BlogVars, db: Session = Depends(get_db)):
     return 'Updated blog'
 
 
-@app.get("/user", response_model=schemas.ShowUser)
+@app.get("/user", response_model=schemas.ShowUser, tags=['Users'])
 async def getUser(id: int, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.id == id).first()
     if not user:
@@ -96,7 +96,7 @@ async def getUser(id: int, db: Session = Depends(get_db)):
     return user
 
 
-@app.post("/user", response_model=schemas.ShowUser)
+@app.post("/user", response_model=schemas.ShowUser, tags=['Users'])
 async def createUser(req: schemas.User, db: Session = Depends(get_db)):
     new_user = models.User(name=req.name, email=req.email,
                            pwd=hashing.Hash.bcrypt(req.pwd))
