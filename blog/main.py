@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends, Response, HTTPException, status
 from db import engine, SessionLocal
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Dict
 import models, schemas, hashing
 import uvicorn
 
@@ -52,17 +52,6 @@ async def createBlog(req: schemas.BlogVars, db: Session = Depends(get_db)):
     return new_blog
 
 
-@app.post("/user")
-async def createUser(req: schemas.User, db: Session = Depends(get_db)):
-    new_user = models.User(name=req.name, email=req.email,
-                           pwd=hashing.Hash.bcrypt(req.pwd))
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-
-    return new_user
-
-
 @app.delete("/blog/{id}", status_code=status.HTTP_204_NO_CONTENT)
 async def deleteBlog(id, db: Session = Depends(get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id == id)
@@ -93,6 +82,29 @@ async def updateBlog(id, req: schemas.BlogVars, db: Session = Depends(get_db)):
     db.commit()
 
     return 'Updated blog'
+
+
+@app.get("/user", response_model=schemas.ShowUser)
+async def getUser(id: int, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.id == id).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"User of id: {id} -> Not Available"
+        )
+
+    return user
+
+
+@app.post("/user", response_model=schemas.ShowUser)
+async def createUser(req: schemas.User, db: Session = Depends(get_db)):
+    new_user = models.User(name=req.name, email=req.email,
+                           pwd=hashing.Hash.bcrypt(req.pwd))
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+
+    return new_user
 
 
 if __name__ == "__main__":
