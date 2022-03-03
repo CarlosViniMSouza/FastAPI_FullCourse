@@ -26,6 +26,7 @@ def hello():
 @app.get("blog/all", response_model=List[schemas.ShowBlog])
 async def allBlogs(db: Session = Depends(get_db)):
     blogs = db.query(models.Blog).all()
+
     return blogs
 
 
@@ -49,6 +50,20 @@ async def createBlog(req: schemas.BlogVars, db: Session = Depends(get_db)):
     db.refresh(new_blog)
 
     return new_blog
+
+
+@app.post("/user")
+async def createUser(req: schemas.User, db: Session = Depends(get_db)):
+    new_user = models.User(
+        name=req.name,
+        email=req.email,
+        pwd=req.pwd
+    )
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+
+    return new_user
 
 
 @app.delete("/blog/{id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -85,5 +100,4 @@ async def updateBlog(id, req: schemas.BlogVars, db: Session = Depends(get_db)):
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8080)
-
 # continue in 1:38:53
