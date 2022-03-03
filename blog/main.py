@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends, Response, HTTPException, status
 from db import engine, SessionLocal
 from sqlalchemy.orm import Session
 from typing import List
-import models, schemas
+import models, schemas, hashing
 import uvicorn
 
 app = FastAPI()
@@ -54,11 +54,8 @@ async def createBlog(req: schemas.BlogVars, db: Session = Depends(get_db)):
 
 @app.post("/user")
 async def createUser(req: schemas.User, db: Session = Depends(get_db)):
-    new_user = models.User(
-        name=req.name,
-        email=req.email,
-        pwd=req.pwd
-    )
+    new_user = models.User(name=req.name, email=req.email,
+                           pwd=hashing.Hash.bcrypt(req.pwd))
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
