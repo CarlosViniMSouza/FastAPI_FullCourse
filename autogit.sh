@@ -1,4 +1,4 @@
 git add -A
-git commit -m "Actual Topic: Relationships | Next Topic: API Routers"
+git commit -m "Actual Topic: API Routers | Next Topic: API Routers Operators"
 git push
 git status

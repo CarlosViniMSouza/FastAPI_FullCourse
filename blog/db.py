@@ -1,5 +1,7 @@
+from typing import Any
+
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, DeclarativeMeta
 from sqlalchemy import create_engine
 
 SQL_DB_URL = 'sqlite:///./blog.db'
@@ -11,3 +13,11 @@ engine = create_engine(
 SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 
 Base = declarative_base()
+
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

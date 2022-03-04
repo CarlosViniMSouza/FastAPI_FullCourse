@@ -1,21 +1,17 @@
 from fastapi import FastAPI, Depends, Response, HTTPException, status
-from db import engine, SessionLocal
 from sqlalchemy.orm import Session
-from typing import List, Dict
 import models, schemas, hashing
+from db import engine, get_db
+from typing import List, Dict
+from routers import blog
 import uvicorn
+
 
 app = FastAPI()
 
 models.Base.metadata.create_all(engine)
 
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+app.include_router(blog.router)
 
 
 @app.get("/")
@@ -109,4 +105,3 @@ async def createUser(req: schemas.User, db: Session = Depends(get_db)):
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8080)
-# continue in 1:38:53
