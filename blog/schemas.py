@@ -1,15 +1,13 @@
 from pydantic import BaseModel
+from typing import List
 
 
-class BlogVars(BaseModel):
+class BlogBase(BaseModel):
     title: str
     body: str
 
 
-class ShowBlog(BlogVars):
-    title: str
-    body: str
-
+class BlogVars(BlogBase):
     class Config():
         orm_mode = True
 
@@ -17,12 +15,22 @@ class ShowBlog(BlogVars):
 class User(BaseModel):
     name: str
     email: str
-    pwd: str
+    password: str
 
 
 class ShowUser(BaseModel):
     name: str
     email: str
+    blogs: List[BlogVars] = []
+
+    class Config():
+        orm_mode = True
+
+
+class ShowBlog(BaseModel):
+    title: str
+    body: str
+    creator: ShowUser
 
     class Config():
         orm_mode = True
